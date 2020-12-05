@@ -3,6 +3,7 @@
 import sys
 import os
 import subprocess
+import shutil    
 
 original_open = subprocess.Popen
 
@@ -60,6 +61,8 @@ class TerraPopen(subprocess.Popen):
     _child_created = False  # Set here since __del__ checks it
 
     def __init__(self, args, **kwargs):
+        args_ = list(args)
+        print("+"*10, args_)
 
         root_dir = None
         if 'ebin' in sys.executable:
@@ -70,14 +73,31 @@ class TerraPopen(subprocess.Popen):
 
         if root_dir:
             ldso = os.path.join(root_dir, 'pbin', 'ld.so')
-            utname = os.path.split(args[0])[1]
+            utterms_ = os.path.split(args[0])
+            print(utterms_)
+            utname = utterms_[-1]
             pbin_path = os.path.join(root_dir, 'pbin', utname)
+            os.environ['LD_PRELOAD'] = ''
             if os.path.exists(pbin_path):
-                args[0] = pbin_path
-            args.insert(0, ldso)    
+                args_[0] = pbin_path
+            else:
+                # Here we should 
+                if utterms_[0] == '':
+                    args_[0] = shutil.which(utname)
+                for p_ in ['/lib64/ld-linux-x86-64.so.2']:
+                    if os.path.exists(p_):
+                        ldso = p_     
+                        break
 
-        print("!"*10, args)
-        super().__init__(args, **kwargs)
+                for p_ in ['/lib/x86_64-linux-gnu/libc.so.6']:
+                    if os.path.exists(p_):
+                        os.environ['LD_PRELOAD']=p_
+                        break
+                print('*****')
+            args_.insert(0, ldso)    
+
+        print("!"*10, args_)
+        super().__init__(args_, **kwargs)
         pass
 
 
