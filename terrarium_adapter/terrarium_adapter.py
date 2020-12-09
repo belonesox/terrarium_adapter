@@ -62,7 +62,7 @@ class TerraPopen(subprocess.Popen):
 
     def __init__(self, args, **kwargs):
         args_ = list(args)
-        print("+"*10, args_)
+        # print("+"*10, args_)
 
         root_dir = None
         if 'ebin' in sys.executable:
@@ -74,7 +74,7 @@ class TerraPopen(subprocess.Popen):
         if root_dir:
             ldso = os.path.join(root_dir, 'pbin', 'ld.so')
             utterms_ = os.path.split(args[0])
-            print(utterms_)
+            # print(utterms_)
             utname = utterms_[-1]
             pbin_path = os.path.join(root_dir, 'pbin', utname)
             os.environ['LD_PRELOAD'] = ''
@@ -93,10 +93,10 @@ class TerraPopen(subprocess.Popen):
                     if os.path.exists(p_):
                         os.environ['LD_PRELOAD']=p_
                         break
-                print('*****')
+                # print('*****')
             args_.insert(0, ldso)    
 
-        print("!"*10, args_)
+        # print("!"*10, args_)
         super().__init__(args_, **kwargs)
         pass
 
