@@ -3,13 +3,44 @@
 import sys
 import os
 import subprocess
-import shutil    
+import shutil  
+import time  
 
 original_open = subprocess.Popen
 
 def  our_popen(scmd):
     print('Fake!!!')
     pass
+
+preloadso_ = []          
+LIBDIR = '/lib/x86_64-linux-gnu'  
+ok_ = False
+for LIBDIR in ['/lib64', '/lib/x86_64-linux-gnu', '/lib']:
+    if os.path.exists(LIBDIR):
+        for file_ in os.listdir(LIBDIR):
+            filep_ = os.path.join(LIBDIR, file_)
+            # print(file_)
+            if '.so' in file_ and not os.path.islink(filep_):
+                okl_ = False
+                for start_ in ['lib']:
+                # for start_ in ['libc-', 'libdl-', 'libcap']:
+                    okl_ = okl_ or file_.startswith(start_)
+                    if okl_:
+                        break
+                if okl_:            
+                    preloadso_.append(filep_)
+                    ok_ = True    
+    if ok_:
+        break                
+
+LDSO_HOST = ''
+for p_ in ['/lib64/ld-linux-x86-64.so.2']:
+    if os.path.exists(p_):
+        LDSO_HOST = p_     
+        break
+
+
+LD_LIBRARY_PATH = os.environ['LD_LIBRARY_PATH'] 
 
 
 class TerraPopen(subprocess.Popen):
@@ -78,24 +109,26 @@ class TerraPopen(subprocess.Popen):
             utname = utterms_[-1]
             pbin_path = os.path.join(root_dir, 'pbin', utname)
             os.environ['LD_PRELOAD'] = ''
+            os.environ['LD_PRELOAD_PATH'] = ''
+            os.environ['LD_LIBRARY_PATH'] = LD_LIBRARY_PATH
             if os.path.exists(pbin_path):
                 args_[0] = pbin_path
             else:
                 # Here we should 
                 if utterms_[0] == '':
-                    args_[0] = shutil.which(utname)
-                for p_ in ['/lib64/ld-linux-x86-64.so.2']:
-                    if os.path.exists(p_):
-                        ldso = p_     
-                        break
-
-                for p_ in ['/lib/x86_64-linux-gnu/libc.so.6']:
-                    if os.path.exists(p_):
-                        os.environ['LD_PRELOAD']=p_
-                        break
+                    utname_ = shutil.which(utname)
+                    if utname_:
+                        args_[0] = utname_
+                ldso = LDSO_HOST     
+                os.environ['LD_PRELOAD_PATH'] = LIBDIR
+                os.environ['LD_LIBRARY_PATH'] = ';'.join([LIBDIR, '/usr/lib64', '/usr/lib/x86_64-linux-gnu/', LD_LIBRARY_PATH])
+                os.environ['LD_PRELOAD']=' '.join(preloadso_)
+                # print("os.environ['LD_PRELOAD']", os.environ['LD_PRELOAD'])
+                # print("os.environ['LD_PRELOAD_PATH']", os.environ['LD_PRELOAD_PATH'])
                 # print('*****')
             args_.insert(0, ldso)    
 
+        # time.sleep(5)
         # print("!"*10, args_)
         super().__init__(args_, **kwargs)
         pass
