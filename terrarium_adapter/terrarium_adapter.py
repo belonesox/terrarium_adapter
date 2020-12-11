@@ -40,7 +40,7 @@ for p_ in ['/lib64/ld-linux-x86-64.so.2']:
         break
 
 LD_LIBRARY_PATH = ''
-if 'LD_LIBRARY_PATH' in os.environ['LD_LIBRARY_PATH']: 
+if 'LD_LIBRARY_PATH' in os.environ: 
     LD_LIBRARY_PATH = os.environ['LD_LIBRARY_PATH'] 
 
 
