@@ -39,8 +39,9 @@ for p_ in ['/lib64/ld-linux-x86-64.so.2']:
         LDSO_HOST = p_     
         break
 
-
-LD_LIBRARY_PATH = os.environ['LD_LIBRARY_PATH'] 
+LD_LIBRARY_PATH = ''
+if 'LD_LIBRARY_PATH' in os.environ['LD_LIBRARY_PATH']: 
+    LD_LIBRARY_PATH = os.environ['LD_LIBRARY_PATH'] 
 
 
 class TerraPopen(subprocess.Popen):
