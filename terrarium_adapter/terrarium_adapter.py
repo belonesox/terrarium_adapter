@@ -120,6 +120,10 @@ class TerraPopen(subprocess.Popen):
                     utname_ = shutil.which(utname)
                     if utname_:
                         args_[0] = utname_
+
+                header = open(args_[0], "rb").read(16)     
+                if not b'ELF' in header:
+                    args_.insert(0, '/bin/sh')    
                 ldso = LDSO_HOST     
                 os.environ['LD_PRELOAD_PATH'] = LIBDIR
                 os.environ['LD_LIBRARY_PATH'] = ';'.join([LIBDIR, '/usr/lib64', '/usr/lib/x86_64-linux-gnu/', LD_LIBRARY_PATH])
@@ -127,10 +131,11 @@ class TerraPopen(subprocess.Popen):
                 # print("os.environ['LD_PRELOAD']", os.environ['LD_PRELOAD'])
                 # print("os.environ['LD_PRELOAD_PATH']", os.environ['LD_PRELOAD_PATH'])
                 # print('*****')
+            # args_.insert(0, '/bin/sh')    
             args_.insert(0, ldso)    
 
         # time.sleep(5)
-        # print("!"*10, args_)
+        #print("!"*10, args_)
         super().__init__(args_, **kwargs)
         pass
 

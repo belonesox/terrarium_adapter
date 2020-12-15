@@ -7,6 +7,7 @@ import subprocess
 # Включая компиляцию с нуиткой.
 
 for cmds_ in [
+        ('/usr/bin/xdg-user-dir'),
         ('ls', '-l', '/'),
         ('uname', '-a'),
         ('gsettings', '--version'),
