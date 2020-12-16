@@ -109,6 +109,7 @@ class TerraPopen(subprocess.Popen):
             # print(utterms_)
             utname = utterms_[-1]
             pbin_path = os.path.join(root_dir, 'pbin', utname)
+            ebin_path = os.path.join(root_dir, 'ebin', utname)
             os.environ['LD_PRELOAD'] = ''
             os.environ['LD_PRELOAD_PATH'] = ''
             os.environ['LD_LIBRARY_PATH'] = LD_LIBRARY_PATH
@@ -117,9 +118,12 @@ class TerraPopen(subprocess.Popen):
             else:
                 # Here we should 
                 if utterms_[0] == '':
-                    utname_ = shutil.which(utname)
-                    if utname_:
-                        args_[0] = utname_
+                    if os.path.exists(ebin_path):
+                        args_[0] = ebin_path
+                    else:    
+                        utname_ = shutil.which(utname)
+                        if utname_:
+                            args_[0] = utname_
 
                 header = open(args_[0], "rb").read(16)     
                 if not b'ELF' in header:
@@ -135,7 +139,7 @@ class TerraPopen(subprocess.Popen):
             args_.insert(0, ldso)    
 
         # time.sleep(5)
-        #print("!"*10, args_)
+        # print("!"*10, args_)
         super().__init__(args_, **kwargs)
         pass
 

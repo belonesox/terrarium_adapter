@@ -7,7 +7,18 @@ import subprocess
 # Включая компиляцию с нуиткой.
 
 for cmds_ in [
-        ('/usr/bin/xdg-user-dir'),
+        ('start-compton',),    
+    ]:
+    print('*'*20, ' '.join(cmds_) + ':\n')
+    try:
+    # if 1:
+        subprocess.run(cmds_)
+    except Exception as ex_:
+        print('Failed to run!')
+
+for cmds_ in [
+        ('/vagrant/out-debug/ebin/start-compton',),    
+        ('/usr/bin/xdg-user-dir',),
         ('ls', '-l', '/'),
         ('uname', '-a'),
         ('gsettings', '--version'),
@@ -17,6 +28,7 @@ for cmds_ in [
             ]:
     print('*'*20, ' '.join(cmds_) + ':\n')
     try:
+    # if 1:
         ls = subprocess.check_output(cmds_)
         print(ls)
     except Exception as ex_:
