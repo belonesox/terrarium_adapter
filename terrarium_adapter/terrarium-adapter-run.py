@@ -29,6 +29,7 @@ for cmds_ in [
     print('*'*20, ' '.join(cmds_) + ':\n')
     try:
     # if 1:
+        print('*'*20, ' '.join(cmds_) + ':\n')
         ls = subprocess.check_output(cmds_)
         print(ls)
     except Exception as ex_:

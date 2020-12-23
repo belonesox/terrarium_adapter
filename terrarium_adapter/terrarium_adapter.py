@@ -93,7 +93,13 @@ class TerraPopen(subprocess.Popen):
     _child_created = False  # Set here since __del__ checks it
 
     def __init__(self, args, **kwargs):
-        args_ = list(args)
+        args_ = None
+        args_is_str = isinstance(args, str)
+        # print("@"*10, args)
+        if args_is_str:
+            args_ = list(args.split())
+        else:    
+            args_ = list(args)
         # print("+"*10, args_)
 
         root_dir = None
@@ -105,7 +111,7 @@ class TerraPopen(subprocess.Popen):
 
         if root_dir:
             ldso = os.path.join(root_dir, 'pbin', 'ld.so')
-            utterms_ = os.path.split(args[0])
+            utterms_ = os.path.split(args_[0])
             # print(utterms_)
             utname = utterms_[-1]
             pbin_path = os.path.join(root_dir, 'pbin', utname)
@@ -122,12 +128,20 @@ class TerraPopen(subprocess.Popen):
                         args_[0] = ebin_path
                     else:    
                         utname_ = shutil.which(utname)
+                        # print(utname, '*'*20, utname_)
                         if utname_:
                             args_[0] = utname_
 
-                header = open(args_[0], "rb").read(16)     
+                header = open(args_[0], "rb").read(32)     
                 if not b'ELF' in header:
-                    args_.insert(0, '/bin/sh')    
+                    interpreter = '/bin/sh'
+                    shebang_start = b'#!'
+                    if header.startswith(shebang_start):
+                        headerline = header.split(b'\n')[0][len(shebang_start):]
+                        for terms_ in reversed(headerline.split()):
+                            args_.insert(0, terms_)    
+                    else:    
+                        args_.insert(0, interpreter)    
                 ldso = LDSO_HOST     
                 os.environ['LD_PRELOAD_PATH'] = LIBDIR
                 os.environ['LD_LIBRARY_PATH'] = ';'.join([LIBDIR, '/usr/lib64', '/usr/lib/x86_64-linux-gnu/', LD_LIBRARY_PATH])
@@ -140,6 +154,9 @@ class TerraPopen(subprocess.Popen):
 
         # time.sleep(5)
         # print("!"*10, args_)
+        if args_is_str:
+            args_ = " ".join(args_)
+
         super().__init__(args_, **kwargs)
         pass
 
