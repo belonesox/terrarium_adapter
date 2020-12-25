@@ -43,6 +43,13 @@ LD_LIBRARY_PATH = ''
 if 'LD_LIBRARY_PATH' in os.environ: 
     LD_LIBRARY_PATH = os.environ['LD_LIBRARY_PATH'] 
 
+root_dir = None
+if 'ebin' in sys.executable:
+    root_dir = sys.executable.split('ebin')[0]
+
+if 'ebin' in sys.argv[0]:
+    root_dir = sys.argv[0].split('ebin')[0]
+
 
 class TerraPopen(subprocess.Popen):
     """ Execute a child program in a new process.
@@ -101,13 +108,6 @@ class TerraPopen(subprocess.Popen):
         else:    
             args_ = list(args)
         # print("+"*10, args_)
-
-        root_dir = None
-        if 'ebin' in sys.executable:
-            root_dir = sys.executable.split('ebin')[0]
-
-        if 'ebin' in sys.argv[0]:
-            root_dir = sys.argv[0].split('ebin')[0]
 
         if root_dir:
             ldso = os.path.join(root_dir, 'pbin', 'ld.so')
