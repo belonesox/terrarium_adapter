@@ -44,11 +44,14 @@ if 'LD_LIBRARY_PATH' in os.environ:
     LD_LIBRARY_PATH = os.environ['LD_LIBRARY_PATH'] 
 
 root_dir = None
-if 'ebin' in sys.executable:
-    root_dir = sys.executable.split('ebin')[0]
-
-if 'ebin' in sys.argv[0]:
-    root_dir = sys.argv[0].split('ebin')[0]
+dirs_ = ['ebin', 'pbin']
+for dir_name in dirs_:
+    if dir_name in sys.executable:
+        root_dir = sys.executable.split(dir_name)[0]
+        break
+    if dir_name in sys.argv[0]:
+        root_dir = sys.argv[0].split(dir_name)[0]
+        break
 
 
 class TerraPopen(subprocess.Popen):
