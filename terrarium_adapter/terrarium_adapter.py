@@ -112,6 +112,7 @@ class TerraPopen(subprocess.Popen):
             args_ = list(args)
         # print("+"*10, args_)
 
+        # breakpoint()
         if root_dir:
             ldso = os.path.join(root_dir, 'pbin', 'ld.so')
             utterms_ = os.path.split(args_[0])
@@ -123,6 +124,7 @@ class TerraPopen(subprocess.Popen):
             os.environ['LD_PRELOAD_PATH'] = ''
             os.environ['LD_LIBRARY_PATH'] = LD_LIBRARY_PATH
             if os.path.exists(pbin_path):
+                os.environ['LD_LIBRARY_PATH'] += ':' + os.path.join(root_dir, 'pbin')
                 args_[0] = pbin_path
             else:
                 # Here we should 
