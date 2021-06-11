@@ -123,8 +123,8 @@ class TerraPopen(subprocess.Popen):
             os.environ['LD_PRELOAD'] = ''
             os.environ['LD_PRELOAD_PATH'] = ''
             os.environ['LD_LIBRARY_PATH'] = LD_LIBRARY_PATH
-            if os.path.exists(pbin_path):
-                os.environ['LD_LIBRARY_PATH'] += ':' + os.path.join(root_dir, 'pbin')
+            os.environ['LD_LIBRARY_PATH'] += ':' + os.path.join(root_dir, 'pbin') + ':' + os.path.join(root_dir, 'lib64')
+            if os.path.exists(pbin_path) and not os.path.exists(ebin_path):
                 args_[0] = pbin_path
             else:
                 # Here we should 
@@ -149,8 +149,10 @@ class TerraPopen(subprocess.Popen):
                         args_.insert(0, interpreter)    
                 ldso = LDSO_HOST     
                 os.environ['LD_PRELOAD_PATH'] = LIBDIR
-                os.environ['LD_LIBRARY_PATH'] = ';'.join([LIBDIR, '/usr/lib64', '/usr/lib/x86_64-linux-gnu/', LD_LIBRARY_PATH])
+                # os.environ['LD_LIBRARY_PATH'] = ''
+                os.environ['LD_LIBRARY_PATH'] = ':'.join([LIBDIR, '/usr/lib64', '/usr/lib/x86_64-linux-gnu/', LD_LIBRARY_PATH])
                 os.environ['LD_PRELOAD']=' '.join(preloadso_)
+                os.environ['PYTHONPATH']=''
                 # print("os.environ['LD_PRELOAD']", os.environ['LD_PRELOAD'])
                 # print("os.environ['LD_PRELOAD_PATH']", os.environ['LD_PRELOAD_PATH'])
                 # print('*****')
@@ -162,6 +164,10 @@ class TerraPopen(subprocess.Popen):
         if args_is_str:
             args_ = " ".join(args_)
 
+        # for k, v in os.environ.items():
+        #     print(f'{k}={v}')
+        # # print(list(dict(os.environ).items()))
+        # print(args_)
         super().__init__(args_, **kwargs)
         pass
 
