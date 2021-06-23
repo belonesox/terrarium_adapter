@@ -12,7 +12,6 @@ with open('HISTORY.rst') as history_file:
 
 requirements = [ ]
 
-setup_requirements = [ ]
 
 test_requirements = [ ]
 
@@ -39,10 +38,10 @@ setup(
     keywords='terrarium_adapter',
     name='terrarium_adapter',
     packages=find_packages(include=['terrarium_adapter', 'terrarium_adapter.*']),
-    setup_requires=setup_requirements,
+    version_config=True,
+    setup_requires=['setuptools-git-versioning'],
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/belonesox/terrarium_adapter',
-    version='0.1.0',
     zip_safe=False,
 )
