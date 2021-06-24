@@ -8,6 +8,16 @@ import time
 
 original_open = subprocess.Popen
 
+import ctypes.util
+original_find_library = ctypes.util.find_library
+
+def our_find_library(name):
+    libname = f'lib{name}.so'
+    return libname
+
+ctypes.util.find_library = our_find_library
+
+
 def  our_popen(scmd):
     print('Fake!!!')
     pass
