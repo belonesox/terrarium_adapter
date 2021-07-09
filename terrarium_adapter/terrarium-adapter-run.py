@@ -24,7 +24,7 @@ for cmds_ in [
         ('gsettings', '--version'),
         ('compton', '--version'),
         ('gs', '-v'),
-        ('python3.8', '-V'),
+        ('python3', '-V'),
             ]:
     print('*'*20, ' '.join(cmds_) + ':\n')
     try:
