@@ -25,6 +25,8 @@ def  our_popen(scmd):
 preloadso_ = []          
 LIBDIR = '/lib/x86_64-linux-gnu'  
 ok_ = False
+
+
 for LIBDIR in ['/lib64', '/lib/x86_64-linux-gnu', '/lib']:
     if os.path.exists(LIBDIR):
         for file_ in os.listdir(LIBDIR):
@@ -34,7 +36,7 @@ for LIBDIR in ['/lib64', '/lib/x86_64-linux-gnu', '/lib']:
                 okl_ = False
                 # for start_ in ['lib']:
                 for start_ in ['libc-', 'libdl-', 'libcap']:
-                    okl_ = okl_ or file_.startswith(start_)
+                    okl_ = okl_ or file_.startswith(start_) and not 'libc-client' in file_
                     if okl_:
                         break
                 if okl_:            
