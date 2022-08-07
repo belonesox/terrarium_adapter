@@ -6,6 +6,8 @@ import subprocess
 import shutil  
 import time  
 
+      
+
 original_open = subprocess.Popen
 
 import ctypes.util
@@ -35,7 +37,8 @@ for LIBDIR in ['/lib64', '/lib/x86_64-linux-gnu', '/lib']:
             if '.so' in file_ and not os.path.islink(filep_) and not 'libthread_db' in file_ and os.path.getsize(filep_)>1024:
                 okl_ = False
                 # for start_ in ['lib']:
-                for start_ in ['libc-', 'libdl-', 'libcap']:
+                for start_ in ['libc-', #'libdl-', #'libcap'
+                              ]:
                     okl_ = okl_ or file_.startswith(start_) and not 'libc-client' in file_
                     if okl_:
                         break
