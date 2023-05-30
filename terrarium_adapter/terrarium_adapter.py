@@ -71,7 +71,7 @@ for dir_name in dirs_:
 dirs_ = ['in/src',]
 for dir_name in dirs_:
     if dir_name in sys.argv[0]:
-        root_dir = os.path.join(sys.argv[0].split(dir_name)[0], 'out')
+        root_dir = os.path.realpath(os.path.join(sys.argv[0].split(dir_name)[0], 'out') + '/')
         break
 
 
